@@ -3,6 +3,7 @@ assert = require 'assert'
 Q = require 'q'
 
 get = (path) ->
+  console.log path
   client = restify.createJsonClient
     url : 'http://teamcity',
     version: '*',
@@ -17,16 +18,27 @@ get = (path) ->
   deferred.promise
 
 buildMessage = (detail) ->
-  console.log detail
+  message = ""
+  message += detail.username + ": "
+  message += detail.comment
+  message
 
-get('/guestAuth/app/rest/changes?build=id:378336').then((changeArray) ->
+#GET /guestAuth/app/rest/builds/buildType:bt2296   changes.href
+
+get('/guestAuth/app/rest/builds/buildType:bt2296').then((changeURL) ->
+  #console.log changeURL
+  get changeURL.changes.href
+  , (err0) ->
+    console.log "error getting changeURL" + err0
+).then((changeArray) ->
   list = (get url.href for url in changeArray.change)
   Q.all(list)
  , (err) ->
-    console.log err
+    console.log "error getting change array" + err
 ).then((changeDetailsArray) ->
   resultMessages = (buildMessage detail for detail in changeDetailsArray)
+  console.log resultMessages
 , (err2) ->
-  console.log err2
+  console.log "error getting change details" + err2
 ).done()
 
