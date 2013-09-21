@@ -16,15 +16,16 @@ get = (path) ->
 
   deferred.promise
 
+buildMessage = (detail) ->
+  console.log detail
 
-get('/guestAuth/app/rest/changes?build=id:378336').then((data) ->
-  #console.log data
-  list = (get url.href for url in data.change)
+get('/guestAuth/app/rest/changes?build=id:378336').then((changeArray) ->
+  list = (get url.href for url in changeArray.change)
   Q.all(list)
  , (err) ->
     console.log err
-).then((data2) ->
-  console.log data2
+).then((changeDetailsArray) ->
+  resultMessages = (buildMessage detail for detail in changeDetailsArray)
 , (err2) ->
   console.log err2
 ).done()
