@@ -25,10 +25,11 @@ buildMessage = (detail) ->
 
 #GET /guestAuth/app/rest/builds/buildType:bt2296   changes.href
 
-get('/guestAuth/app/rest/builds/buildType:bt2296').then((changeURL) ->
-  #console.log changeURL
-  get changeURL.changes.href
-  , (err0) ->
+get('/guestAuth/app/rest/builds/buildType:bt2296').then((changeObj) ->
+  if changeObj.changes.count is 0
+    throw new Error("0 changes")
+  get changeObj.changes.href
+, (err0) ->
     console.log "error getting changeURL" + err0
 ).then((changeArray) ->
   list = (get url.href for url in changeArray.change)
