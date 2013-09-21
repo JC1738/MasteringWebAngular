@@ -16,10 +16,11 @@ get = (path) ->
 
   deferred.promise
 
-#/guestAuth/app/rest/changes?build=id:378336
+
 get('/guestAuth/app/rest/changes?build=id:378336').then((data) ->
   #console.log data
-  get(data.change[0].href)
+  list = (get url.href for url in data.change)
+  Q.all(list)
  , (err) ->
     console.log err
 ).then((data2) ->
