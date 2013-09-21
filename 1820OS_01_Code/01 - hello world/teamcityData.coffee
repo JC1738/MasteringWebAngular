@@ -18,8 +18,13 @@ get = (path) ->
 
 #/guestAuth/app/rest/changes?build=id:378336
 get('/guestAuth/app/rest/changes?build=id:378336').then((data) ->
-  console.log data
+  #console.log data
+  get(data.change[0].href)
  , (err) ->
     console.log err
+).then((data2) ->
+  console.log data2
+, (err2) ->
+  console.log err2
 ).done()
 
