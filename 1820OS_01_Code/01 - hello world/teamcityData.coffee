@@ -49,9 +49,14 @@ get('/guestAuth/app/rest/builds?locator=buildType:bt2296,number:1848').then((bui
     throw err1
 ).then((changeDetailsArray) ->
   resultMessages = (buildMessage detail for detail in changeDetailsArray)
-  console.log resultMessages
+  #console.log resultMessages
   resultMessages
 , (err2) ->
   console.log "error getting change details " + err2
-).done()
+  throw err2
+).done((results) ->
+  console.log results
+, (finalError) ->
+  console.log "Final Error: " + finalError
+)
 
