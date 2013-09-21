@@ -23,9 +23,18 @@ buildMessage = (detail) ->
   message += detail.comment
   message
 
-#GET /guestAuth/app/rest/builds/buildType:bt2296   changes.href
+#Locate build to get local build id
+#http://teamcity/guestAuth/app/rest/builds/?locator=buildType:bt2296,number:1848
+#build.href
 
-get('/guestAuth/app/rest/builds/buildType:bt2296').then((changeObj) ->
+get('/guestAuth/app/rest/builds?locator=buildType:bt2296,number:1848').then((buildInfo) ->
+  #console.log buildInfo.build[0]
+  get(buildInfo.build[0].href)
+, (err) ->
+  console.log "failed to get build info" + err
+  throw err
+).then((changeObj) ->
+  #console.log changeObj
   if changeObj.changes.count is 0
     throw new Error("0 changes")
   get changeObj.changes.href
@@ -35,12 +44,13 @@ get('/guestAuth/app/rest/builds/buildType:bt2296').then((changeObj) ->
 ).then((changeArray) ->
   list = (get url.href for url in changeArray.change)
   Q.all(list)
- , (err) ->
-    console.log "error getting change array " + err
-    throw err
+ , (err1) ->
+    console.log "error getting change array " + err1
+    throw err1
 ).then((changeDetailsArray) ->
   resultMessages = (buildMessage detail for detail in changeDetailsArray)
   console.log resultMessages
+  resultMessages
 , (err2) ->
   console.log "error getting change details " + err2
 ).done()
