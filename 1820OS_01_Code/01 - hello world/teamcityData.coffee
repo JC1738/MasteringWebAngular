@@ -3,8 +3,11 @@ assert = require 'assert'
 Q = require 'q'
 stdio = require 'stdio'
 {UserObj} = require "./mail"
+{SMTPHost} = require "./mail"
+{MailMessage} = require "./mail"
+{SendMessage} = require "./mail"
 
-User = new UserObj "Example"
+#User = new UserObj "Example"
 
 
 emailBody = ""
@@ -90,7 +93,15 @@ get(url).then((buildInfo) ->
 ).done((results) ->
   #console.log results
   emailBody = extractBuild buildObj, results
-  console.log emailBody
+  #console.log emailBody
+
+  host = new SMTPHost "otcmail.otcorp.opentable.com"
+
+  message = new MailMessage "jcastillo@opentable.com", "New Build Email", emailBody
+
+  sender = new SendMessage message, host
+  sender.send()
+
 , (finalError) ->
   console.log "Final Error: " + finalError
 )

@@ -8,33 +8,36 @@ exports.UserObj =
     constructor: (@name) ->
       console.log "#{ @name } called as a module"
 
-class SMTPHost
-  constructor: (@host) ->
-      @hostOptions =
-        host: @host
+exports.SMTPHost =
+  class SMTPHost
+    constructor: (@host) ->
+        @hostOptions =
+          host: @host
 
-class MailMessage
-  constructor: (@to, @subject, @text) ->
-    @mailOptions =
-      from: "Team City <teamcity@opentable.com>"
-      to: @to
-      subject: @subject
-      text: @text
+exports.MailMessage =
+  class MailMessage
+    constructor: (@to, @subject, @text) ->
+      @mailOptions =
+        from: "Team City <teamcity@opentable.com>"
+        to: @to
+        subject: @subject
+        text: @text
 
-class SendMessage
-  constructor: (@message, @host) ->
+exports.SendMessage =
+  class SendMessage
+    constructor: (@message, @host) ->
 
-  handleResponse: (error, response) ->
-    if error
-      console.log error
-    else
-      console.log "Message sent: " + response.message
+    handleResponse: (error, response) ->
+      if error
+        console.log error
+      else
+        console.log "Message sent: " + response.message
 
-  send: ->
-    smtpTransport = nodemailer.createTransport "SMTP", @host.hostOptions
-    smtpTransport.sendMail @message.mailOptions, (error, response) =>    #note fat arrow for call back
-      @handleResponse(error, response)
-      smtpTransport.close()
+    send: ->
+      smtpTransport = nodemailer.createTransport "SMTP", @host.hostOptions
+      smtpTransport.sendMail @message.mailOptions, (error, response) =>    #note fat arrow for call back
+        @handleResponse(error, response)
+        smtpTransport.close()
 
 #host = new SMTPHost("otcmail.otcorp.opentable.com")
 
