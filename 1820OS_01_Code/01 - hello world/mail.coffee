@@ -8,30 +8,6 @@ exports.UserObj =
     constructor: (@name) ->
       console.log "#{ @name } called as a module"
 
-class CallJason
-  @client = null
-  @payload = null
-  constructor: (@url) ->
-    @client = restify.createJsonClient
-      url : @url,
-      version: '*',
-      accept: 'application/json'
-
-  handleResponse: (err, req, res, obj) ->
-    assert.ifError err
-    for change in obj['change']
-        console.log change.webLink
-    #console.log '%j', obj
-    @payload = obj
-
-
-  get: (path) ->
-    console.log 'Call Teamcity'
-    @client.get path, (err, req, res, obj) =>
-      @handleResponse err, req, res, obj
-      @client.close()
-      @payload
-
 class SMTPHost
   constructor: (@host) ->
       @hostOptions =
@@ -66,11 +42,4 @@ class SendMessage
 
 #sender = new SendMessage message, host
 #sender.send()
-console.log 'Hello'
 
-client = new CallJason "http://teamcity"
-
-client.get '/guestAuth/app/rest/changes?build=id:378336'
-
-
-console.log 'Finished'
