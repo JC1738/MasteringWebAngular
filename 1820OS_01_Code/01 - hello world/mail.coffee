@@ -3,6 +3,15 @@ restify = require 'restify'
 assert = require 'assert'
 Q = require 'q'
 
+class Test
+
+  myFunction: () ->
+    console.log "this is a test"
+
+
+
+module.exports = Test
+
 class CallJason
   @client = null
   @payload = null
