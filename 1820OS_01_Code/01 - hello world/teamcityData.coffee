@@ -1,6 +1,20 @@
 restify = require 'restify'
 assert = require 'assert'
 Q = require 'q'
+stdio = require 'stdio'
+
+ops = stdio.getopt(
+  build:
+    key: "b"
+    args: 1
+    mandatory: true
+)
+
+# print process.argv
+process.argv.forEach (val, index) ->
+  console.log index + ": " + val
+
+console.log ops.build  if ops.build
 
 get = (path) ->
   #console.log path
@@ -27,7 +41,10 @@ buildMessage = (detail) ->
 #http://teamcity/guestAuth/app/rest/builds/?locator=buildType:bt2296,number:1848
 #build.href
 
-get('/guestAuth/app/rest/builds?locator=buildType:bt2296,number:1848').then((buildInfo) ->
+url = "/guestAuth/app/rest/builds?locator=buildType:bt2296,number:#{ ops.build }"
+console.log url
+
+get(url).then((buildInfo) ->
   #console.log buildInfo.build[0]
   get(buildInfo.build[0].href)
 , (err) ->
