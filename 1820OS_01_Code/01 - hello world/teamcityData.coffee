@@ -3,6 +3,9 @@ assert = require 'assert'
 Q = require 'q'
 stdio = require 'stdio'
 
+emailBody = ""
+buildObj = null
+
 ops = stdio.getopt(
   build:
     key: "b"
@@ -11,10 +14,10 @@ ops = stdio.getopt(
 )
 
 # print process.argv
-process.argv.forEach (val, index) ->
-  console.log index + ": " + val
+#process.argv.forEach (val, index) ->
+#  console.log index + ": " + val
 
-console.log ops.build  if ops.build
+#console.log ops.build  if ops.build
 
 get = (path) ->
   #console.log path
@@ -37,12 +40,20 @@ buildMessage = (detail) ->
   message += detail.comment
   message
 
+extractBuild = (build, results) ->
+  msg = "\n\nBuild: #{ build.number } Tests: #{ build.statusText } Status: #{ build.status }\n\n"
+  msg += "#{ build.webUrl }\n\n"
+  msg += "Commits:\n\n"
+  for change in results
+    msg += "#{ change }"
+  msg
+
 #Locate build to get local build id
 #http://teamcity/guestAuth/app/rest/builds/?locator=buildType:bt2296,number:1848
 #build.href
 
 url = "/guestAuth/app/rest/builds?locator=buildType:bt2296,number:#{ ops.build }"
-console.log url
+#console.log url
 
 get(url).then((buildInfo) ->
   #console.log buildInfo.build[0]
@@ -50,11 +61,12 @@ get(url).then((buildInfo) ->
 , (err) ->
   console.log "failed to get build info" + err
   throw err
-).then((changeObj) ->
-  #console.log changeObj
-  if changeObj.changes.count is 0
+).then((build) ->
+  #console.log build
+  if build.changes.count is 0
     throw new Error("0 changes")
-  get changeObj.changes.href
+  buildObj = build
+  get build.changes.href
 , (err0) ->
     console.log "error getting changeURL" + err0
     throw err0
@@ -72,8 +84,9 @@ get(url).then((buildInfo) ->
   console.log "error getting change details " + err2
   throw err2
 ).done((results) ->
-  console.log results
+  #console.log results
+  emailBody = extractBuild buildObj, results
+  console.log emailBody
 , (finalError) ->
   console.log "Final Error: " + finalError
 )
-
