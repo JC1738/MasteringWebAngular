@@ -2,6 +2,10 @@ restify = require 'restify'
 assert = require 'assert'
 Q = require 'q'
 stdio = require 'stdio'
+{UserObj} = require "./mail"
+
+User = new UserObj "Example"
+
 
 emailBody = ""
 buildObj = null

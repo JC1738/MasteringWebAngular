@@ -3,14 +3,10 @@ restify = require 'restify'
 assert = require 'assert'
 Q = require 'q'
 
-class Test
-
-  myFunction: () ->
-    console.log "this is a test"
-
-
-
-module.exports = Test
+exports.UserObj =
+  class UserObj
+    constructor: (@name) ->
+      console.log "#{ @name } called as a module"
 
 class CallJason
   @client = null
